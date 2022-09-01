@@ -9,4 +9,4 @@ Run these in sequence:
 * `python do_matching.py`
 * `python generate_word_clouds.py`
 
-Requires my fork of [`paper-reviewer-matcher`](https://github.com/patrickmineault/paper-reviewer-matcher). For GPT-3 based keyword inference, write the key (starting with sk) into `.openai-key`. For wordclouds, I recommend using the [Fira Sans Condensed font](https://fonts.google.com/specimen/Fira+Sans+Condensed), which you can download for free in TTF format.
+You will need a data file, which contains PII, hence is not included in this repo; email me for a scrubbed version. Requires my fork of [`paper-reviewer-matcher`](https://github.com/patrickmineault/paper-reviewer-matcher). For GPT-3 based keyword inference, write the key (starting with sk) into `.openai-key`. For wordclouds, I recommend using the [Fira Sans Condensed font](https://fonts.google.com/specimen/Fira+Sans+Condensed), which you can download for free in TTF format.
