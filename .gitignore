@@ -1,0 +1,9 @@
+# Local Netlify folder
+.netlify
+.openai-key
+data
+html
+semanticscholarcache.*
+*.pyc
+*.sqlite
+reference

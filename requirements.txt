@@ -1,0 +1,12 @@
+sentence_transformers
+matplotlib
+numpy
+scipy
+pandas
+seaborn
+dedupe-hcluster
+git+https://github.com/patrickmineault/paper-reviewer-matcher.git
+tqdm
+sqlitedict
+openai
+wordcloud
