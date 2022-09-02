@@ -7,3 +7,5 @@ semanticscholarcache.*
 *.pyc
 *.sqlite
 reference
+.DS_Store
+*checkpoint.ipynb
