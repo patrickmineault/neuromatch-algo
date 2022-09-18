@@ -1,0 +1,5 @@
+[core]
+    autostage = true
+    remote = gs-matching-eval
+['remote "gs-matching-eval"']
+    url = gs://xcorr-dev/matching-eval
