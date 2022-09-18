@@ -1,7 +1,7 @@
 # Local Netlify folder
 .netlify
 .openai-key
-data
+data/interim
 html
 semanticscholarcache.*
 *.pyc
@@ -9,3 +9,6 @@ semanticscholarcache.*
 reference
 .DS_Store
 *checkpoint.ipynb
+cachedir
+geckodriver.log
+.ipynb_checkpoints
