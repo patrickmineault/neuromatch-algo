@@ -32,6 +32,9 @@ def find_best_author_match(search_results, user):
     reference = reference / np.sqrt((reference**2).sum())
     scores = []
 
+    if "data" not in search_results:
+        return np.array([])
+
     for r in search_results["data"]:
         the_papers = [
             clean_none(x.get("title")) + " " + clean_none(x.get("abstract"))
@@ -40,7 +43,7 @@ def find_best_author_match(search_results, user):
         if len(the_papers) == 0:
             scores.append(-1)
             continue
-        encodings = model.encode(the_papers, show_progress_bar=True)
+        encodings = model.encode(the_papers)
         encodings = encodings / np.sqrt((encodings**2).sum(axis=1)).reshape((-1, 1))
         scores.append(reference.dot(encodings.T).max())
 

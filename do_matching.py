@@ -92,9 +92,14 @@ def agglomerate(A, group_size):
     return labels.astype(int)
 
 
-def do_matching(M, ppl_per_group, nrounds):
+def do_matching(M, ppl_per_group, nrounds, fake=False):
     # Ban previous match sets
     A = M.copy()
+
+    if fake:
+        A = .01 * np.random.randn(A.shape[0], A.shape[1])
+        A[M == 1] = 1
+
     std_per = 0.02
 
     labels = agglomerate(A + np.random.randn(A.shape[0]) * std_per, ppl_per_group)
@@ -121,6 +126,7 @@ def do_matching(M, ppl_per_group, nrounds):
         all_goodnesses.append(goodnesses)
 
     return groups, all_goodnesses
+
 
 def calculate_common_coauthors(users, matches, coauthors_map):
     all_authors = collections.ChainMap(*list(coauthors_map.values()))
@@ -178,6 +184,19 @@ def main():
                 M[i, j] = 1
 
     print(f"Banned matches following co-author banning {(M==1).sum() / 2}")
+
+    # Do random matching by overwriting the affinity matrix
+    groups, goodness = do_matching(M, PPL_PER_GROUP, NROUNDS, fake=True)
+    matches = []
+    for j, round in enumerate(groups):
+        for i in range(int(max(round)+1)):
+            matches.append({'user_ids': users.iloc[np.where(round == i)].user_id.tolist(),
+                            'round': j,
+                            'group': i,
+                            'goodness': goodness[j][i]})
+
+    df_matches = pd.DataFrame(matches)
+    df_matches.to_pickle('data/output/random_matches.pkl')
 
     # Now do three rounds of matching.
     groups, goodness = do_matching(M, PPL_PER_GROUP, NROUNDS)
