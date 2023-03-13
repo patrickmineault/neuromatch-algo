@@ -103,7 +103,7 @@ def generate_html(matches):
 def make_single_prompt(abstract):
     # Magic incantation for GPT-3
     return (
-        "Read this scientific abstract and describe up to 10 key phrases associated with it. "
+        "Read this scientific abstract and describe up to 10 key phrases (3-5 words) associated with it. "
         "Assume the reader is a computational neuroscientist. "
         "Be as specific as possible.\n\nAbstract:" + abstract + "\n\Key phrases:\n1."
     )
@@ -150,6 +150,9 @@ def summarize_one_abstract(i, text):
             presence_penalty=0,
         )
         r = response["choices"][0]["text"]
+        print("prompt to OpenAI:")
+        print(full_prompt)
+        print(r)
         abstracts[full_prompt] = r
         abstracts.commit()
         return r
@@ -180,6 +183,9 @@ def generate_top_keywords(prompt):
     )
     r = response["choices"][0]["text"]
     abstracts[prompt] = r
+    print("prompt to OpenAI:")
+    print(prompt)
+    print(r)
     abstracts.commit()
     return r
 
