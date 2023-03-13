@@ -3,18 +3,18 @@ from joblib import Memory
 import json
 import numpy as np
 import requests
-import scholarly
-from scholarly import scholarly
-from scholarly import ProxyGenerator, _proxy_generator
+from sentence_transformers import SentenceTransformer
+
+# import scholarly
+# from scholarly import scholarly
+# from scholarly import ProxyGenerator, _proxy_generator
 import time
 import urllib
 from urllib.parse import urlencode
 
-from get_semantic_scholar_info import find_best_author_match
-
-pg = ProxyGenerator()
-pg.FreeProxies()
-scholarly.use_proxy(pg)
+# pg = ProxyGenerator()
+# pg.FreeProxies()
+# scholarly.use_proxy(pg)
 
 memory = Memory("cachedir", verbose=0)
 
@@ -149,6 +149,58 @@ def infer_author_id(data):
         return q["data"][scores.argmax()]["authorId"]
 
     return None
+
+
+_model = None
+
+
+def get_model():
+    """Singleton for embedding model"""
+    global _model
+    if _model is None:
+        _model = SentenceTransformer("all-mpnet-base-v2")
+    return _model
+
+
+def clean_none(x):
+    return x if x is not None else ""
+
+
+def find_best_author_match(
+    search_results, user, average_interest, force_interest_match=False
+):
+    # Match abstracts via embedding
+    model = get_model()
+    force_interest_match = force_interest_match or user.isna().abstracts
+
+    if force_interest_match:
+        reference = average_interest
+    else:
+        reference = model.encode(user["abstracts"])
+        reference = reference / np.sqrt((reference**2).sum())
+    scores = []
+
+    if "data" not in search_results:
+        return (np.array([]), force_interest_match)
+
+    for r in search_results["data"]:
+        the_papers = [
+            clean_none(x.get("title")) + " " + clean_none(x.get("abstract"))
+            for x in r["papers"][:10]
+        ]
+        if len(the_papers) == 0:
+            scores.append(-1)
+            continue
+        encodings = model.encode(the_papers)
+        encodings = encodings / np.sqrt((encodings**2).sum(axis=1)).reshape((-1, 1))
+        if force_interest_match:
+            scores.append(reference.dot(encodings.T).mean())
+        else:
+            scores.append(reference.dot(encodings.T).max())
+
+    scores = np.array(scores)
+
+    return (scores, force_interest_match)
 
 
 if __name__ == "__main__":
