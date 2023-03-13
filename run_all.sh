@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -e 
+python clean_users.py
+python resolve_openalex.py
+python resolve_coauthors.py
+python create_match_matrix.py
+python do_matching.py
+python generate_word_clouds.py
+python generate_printout.py

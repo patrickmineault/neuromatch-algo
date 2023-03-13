@@ -12,3 +12,7 @@ reference
 cachedir
 geckodriver.log
 .ipynb_checkpoints
+data/input
+data/trash
+data/transformed
+data/output

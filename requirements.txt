@@ -10,3 +10,4 @@ tqdm
 sqlitedict
 openai
 wordcloud
+pyalex
